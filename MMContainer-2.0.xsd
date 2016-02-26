@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- (c) 2015, BuildingSMART, Project Group Multi-Models Author: Sebastian
+    Fuchs -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:MMC="http://www.buildingsmart.org/multi-model/MMContainer/2.0.0" targetNamespace="http://www.buildingsmart.org/multi-model/MMContainer/2.0.0" elementFormDefault="qualified">
+    <element name="MultiModel" type="MMC:MultiModel_Type">
+        <annotation>
+            <documentation>The Root element of a multi-model container.</documentation>
+        </annotation>
+    </element>
+    <complexType name="LinkModel_Type">
+        <complexContent>
+            <extension base="MMC:MetaData_Type">
+                <sequence>
+                    <element name="LinkedModel" type="string" minOccurs="2" maxOccurs="unbounded">
+                        <annotation>
+                            <documentation>The application models, whose elements are referenced in this link model, are listed here for convenience.
+                            Each application model is indicated by its ID.</documentation>
+                        </annotation>
+                    </element>
+                </sequence>
+                <attribute name="location" type="anyURI" use="required">
+                    <annotation>
+                        <documentation>This URI specifies the location of this link model's external resource.
+                        An absolute URI specifies a container external resource, e.g. a remote server.
+                        A relative URI specifies a bundled resource inside the multi-model container relative to this document's location. </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ApplicationModel_Type">
+        <complexContent>
+            <extension base="MMC:MetaData_Type">
+                <sequence>
+                    <element name="ModelData" type="MMC:ModelData_Type" minOccurs="1" maxOccurs="unbounded">
+                        <annotation>
+                            <documentation>Each application model may be represented by different, alternative data formats which contain semantically identical data.</documentation>
+                        </annotation>
+                        <unique name="UniqueResourceID">
+                            <selector xpath="MMC:DataRessource"/>
+                            <field xpath="@id"/>
+                        </unique>
+                    </element>
+                </sequence>
+                <attribute name="id" type="string" use="required">
+                    <annotation>
+                        <documentation>ID of the overall application model; unique within the container.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="modelType" type="string" use="required">
+                    <annotation>
+                        <documentation>The model type identifies the domain of this application model, e. g. time schedule, product model or cost model.
+Valid model type identifiers are externally defined in an application area document (multi-model domain).
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="DataRessource_Type">
+        <annotation>
+            <documentation/>
+        </annotation>
+        <complexContent>
+            <extension base="MMC:MetaData_Type">
+                <attribute name="id" type="string" use="required">
+                    <annotation>
+                        <documentation>ID of this application model's data resource.
+The ID must be unique for all data resources of this data format representation.</documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="location" type="anyURI" use="required">
+                    <annotation>
+                        <documentation>URI specifying the location of this application model's external resource.
+                        An absolute URI specifies a container external resource, e.g. a remote server.
+                        A relative URI specifies a bundled resource inside the multi-model container relative to this document's location.</documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="MetaData_Type" abstract="true">
+        <sequence>
+            <element name="MetaData" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional collection of meta data for a certain element.</documentation>
+                </annotation>
+                <complexType>
+                    <sequence>
+                        <element name="Meta" type="MMC:Meta_Type" minOccurs="1" maxOccurs="unbounded">
+                            <annotation>
+                                <documentation>A meta data entry.
+                                The occurence and semantics of meta data are externally defined in an application area document (multi-model domain).
+                                The management of application areas is not part of this standard.</documentation>
+                            </annotation>
+                        </element>
+                    </sequence>
+                </complexType>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="Meta_Type">
+        <attribute name="key" type="string" use="required">
+            <annotation>
+                <documentation>Key of this meta data entry.
+                If a category is defined for this entry, the key must be unique within those entries of this MetaData collection, which have the same category.
+                Otherwise  the entry belongs to the virtual **anonymous** category and the key must be unique within all the **anonymous** category entries of this MetaData collection.</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="value" type="string" use="required">
+            <annotation>
+                <documentation>Data value of this meta data entry.
+                If a type is defined for this entry, the value must be in a format which corresponds to the given type.</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="type" type="string" use="optional" default="xs:string">
+            <annotation>
+                <documentation>The optional data type of this meta data entry.
+                If no type is given, values shall be treated as strings.
+                If a type is defined for this entry, the value must be in a format which corresponds to the given type.
+                Valid meta data types are externally defined in an application area document (multi-model domain).
+                If no other agreement is made, type names, their semantics and the corresponding formats must conform to the XSD-built in types. See http://www.w3.org/TR/xmlschema-2/#built-in-datatypes</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="category" type="string" use="optional">
+            <annotation>
+                <documentation>Optional category of this meta data entry.
+                Categories group meta data entries. Their work as a namespace for their keys.
+                If no category is given, the entry belongs to the virtual **anonymous** category.
+                Meta data categories are externally defined in an application area document (multi-model domain).
+                </documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+    <complexType name="MultiModel_Type">
+        <complexContent>
+            <extension base="MMC:MetaData_Type">
+                <sequence>
+                    <element name="ApplicationModels" minOccurs="1" maxOccurs="1">
+                        <annotation>
+                            <documentation>Collection of application models. Always present with minimum 1 entry.</documentation>
+                        </annotation>
+                        <complexType>
+                            <sequence>
+                                <element name="ApplicationModel" type="MMC:ApplicationModel_Type" minOccurs="1" maxOccurs="unbounded">
+                                    <annotation>
+                                        <documentation>Specific Application Model with agreed data structure and semantics.
+                                        In particular, application models consist of data elements which can be referenced by an element ID.
+                                        An elemnt ID is guaranteed to be unique within one data resource.</documentation>
+                                    </annotation>
+                                </element>
+                            </sequence>
+                        </complexType>
+                    </element>
+                    <element name="LinkModels" minOccurs="0" maxOccurs="1">
+                        <annotation>
+                            <documentation>Optional collection of link models.</documentation>
+                        </annotation>
+                        <complexType>
+                            <sequence>
+                                <element name="LinkModel" type="MMC:LinkModel_Type" minOccurs="1" maxOccurs="unbounded">
+                                    <annotation>
+                                        <documentation>A link model of this multi-model. The data is located in an external resource.</documentation>
+                                    </annotation>
+                                </element>
+                            </sequence>
+                        </complexType>
+                    </element>
+                </sequence>
+                <attribute name="uuid" type="string" use="required">
+                    <annotation>
+                        <documentation>This is the Universal Unique Identifier of the Multi-Model Container.
+                        It conforms to the Internet Engineering Task Force (IETF) RFC 4122. See https://tools.ietf.org/html/rfc4122
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="formatVersion" use="required">
+                    <annotation>
+                        <documentation>
+                            Version of this Schema. It must correspond
+                            to the version path segment of this target
+                            namespace.
+                        </documentation>
+                    </annotation>
+                    <simpleType>
+                        <restriction base="string">
+                            <enumeration value="2.0.0"></enumeration>
+                        </restriction>
+                    </simpleType>
+                </attribute>
+                <attribute name="mmDomain" type="anyURI" use="optional">
+                    <annotation>
+                        <documentation>Application area of the multi-model, e. g. tender and bid.
+                        The provided URI should - but not have to - point to a public document that describes the application area in detail,
+                        especially the semantics and constraints of allowed application models, their data formats, the structure and location
+                        of the data element's IDs as well as the multiplicity and semantics of links and their rates.
+                        When a private aplication area is used, the provided URI must be distinct from other existing - notably public standards - application area URIs.
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ModelData_Type">
+        <annotation>
+            <documentation/>
+        </annotation>
+        <complexContent>
+            <extension base="MMC:MetaData_Type">
+                <sequence>
+                    <element name="DataRessource" type="MMC:DataRessource_Type" minOccurs="1" maxOccurs="unbounded">
+                        <annotation>
+                            <documentation>
+                                The data of an application model may be distributed among several data resources.
+                                It must be guaranteed, that these data resources contain semantically disjunct data and in conjunction contain semantically
+                                complete data. An element ID is guaranteed to be unique only within each data resource.
+                            </documentation>
+                        </annotation>
+                    </element>
+                </sequence>
+                <attribute name="id" type="string" use="required">
+                    <annotation>
+                        <documentation>ID of this application model's data format representation.
+                        The ID must be unique for all data format representations of this application model.</documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="formatType" type="string" use="required">
+                    <annotation>
+                        <documentation>
+                            The format type identifies the data format of this application model's representation.
+                            E. g. a construction product model may be represented by IFC (SPF), ifcXML, gbXML or others.
+                            Valid format type identifiers are externally defined in an application area document (multi-model domain).
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="formatVersion" type="string" use="optional">
+                    <annotation>
+                        <documentation>
+                            The format version identifies the data formats version of this application model's representation.
+                            E. g. the construction product model data format IFC is availlable in versions 2x3 and 4 at the time of this standard definition.
+                            Valid format version identifiers are externally defined in an application area document (multi-model domain).
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>

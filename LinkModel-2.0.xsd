@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- (c) 2015, BuildingSMART, Project Group Multi-Models Author: Sebastian
+    Fuchs -->
+
+<schema elementFormDefault="qualified"
+    targetNamespace="http://www.buildingsmart.org/multi-model/LinkModel/2.0.0" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:MML="http://www.buildingsmart.org/multi-model/LinkModel/2.0.0">
+
+    <complexType name="LinkModel_Type">
+        <complexContent>
+            <extension base="MML:MetaData_Type">
+                <sequence>
+                    <element name="Link" type="MML:Link_Type"
+                        minOccurs="1" maxOccurs="unbounded" >
+                        <annotation>
+                            <documentation>A link interrelates minimum 2 elements from minimum 2 application models.</documentation>
+                        </annotation>
+                    </element>
+                </sequence>
+                <attribute name="formatVersion" use="required">
+                    <annotation>
+                        <documentation>
+                            Version of this Schema. It must correspond
+                            to the version path segment of this target
+                            namespace.
+                        </documentation>
+                    </annotation>
+                    <simpleType>
+                        <restriction base="string">
+                            <enumeration value="2.0.0"></enumeration>
+                        </restriction>
+                    </simpleType>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <complexType abstract="true" name="MetaData_Type">
+        <sequence>
+            <element name="MetaData" maxOccurs="1" minOccurs="0">
+                <annotation>
+                    <documentation>Optional collection of meta data for a certain element.</documentation>
+                </annotation>
+                <complexType>
+                    <sequence>
+                        <element name="Meta" type="MML:Meta_Type" maxOccurs="unbounded" minOccurs="1">
+                            <annotation>
+                                <documentation>Meta data entry.
+                                The occurence and semantics of meta data are externally defined in an application area document (multi-model domain).
+                                </documentation>
+                            </annotation>
+                        </element>
+                    </sequence>
+                </complexType></element>
+        </sequence>
+    </complexType>
+
+    <complexType name="Link_Type">
+        <complexContent>
+            <extension base="MML:MetaData_Type">
+                <sequence>
+                    <element name="Relatum" minOccurs="2" maxOccurs="unbounded" type="MML:Relatum_Type">
+                        <annotation>
+                            <documentation>Relatum is the representation of one data element from an arbitrary application model, which is part of a multi valued relation: the link.</documentation>
+                        </annotation>
+
+                    </element>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <complexType name="Meta_Type">
+        <attribute name="k" type="string" use="required" >
+            <annotation>
+                <documentation>Key of this meta data entry.
+                To keep link document sizes as small as possible, this attribute name is just a single letter.
+                If a category is defined for this entry, the key must be unique within those entries of this MetaData collection, which have the same category.
+                Otherwise  the entry belongs to the virtual **anonymous** category and the key must be unique within all the **anonymous** category entries of this MetaData collection.
+                </documentation>
+            </annotation></attribute>
+        <attribute name="v" type="string" use="required" >
+            <annotation>
+                <documentation>Data value of this meta data entry.
+                To keep link document sizes as small as possible, this attribute name is just a single letter.
+                If a type is defined for this entry, the value must be in a format which corresponds to the given type.</documentation>
+            </annotation></attribute>
+        <attribute name="t" default="xs:string" type="string"
+            use="optional" >
+            <annotation>
+                <documentation>The optional data type of this meta data entry.
+                To keep link document sizes as small as possible, this attribute name is just a single letter.
+                If no type is given, values shall be treated as Strings.
+                If a type is defined for this entry, the value must be in a format which corresponds to the given type.
+                Valid meta data types are externally defined in an application area document (multi-model domain).
+                If no other agreement is made, type names, their semantics and the corresponding formats must conform to the XSD-built in types. See http://www.w3.org/TR/xmlschema-2/#built-in-datatypes
+                </documentation>
+            </annotation></attribute>
+        <attribute name="c" type="string" use="optional">
+            <annotation>
+                <documentation>Optional category of this meta data entry.
+                To keep link document sizes as small as possible, this attribute name is just a single letter.
+                Categories group meta data entries. Their work as a namespace for their keys.
+                If no category is given, the entry belongs to the virtual **anonymous** category.
+                Meta data categories are externally defined in an application area document (multi-model domain).
+                </documentation>
+            </annotation></attribute>
+    </complexType>
+
+    <element name="LinkModel" type="MML:LinkModel_Type">
+        <annotation>
+            <documentation>This is the root element of a link model document.</documentation>
+        </annotation>
+    </element>
+
+    <complexType name="Relatum_Type">
+        <complexContent>
+            <extension base="MML:MetaData_Type">
+                 <sequence>
+                    <element name="Rate" maxOccurs="unbounded" minOccurs="0">
+                        <annotation>
+                            <documentation>Optional rating, quantification or weighing of this relatum against others.
+                            The occurence and semantics of rates are externally defined in an application area document (multi-model domain).
+                            </documentation>
+                        </annotation>
+                        <complexType>
+                            <attribute name="t" type="string" use="required">
+                                <annotation>
+                                    <documentation>Type of this rate.
+                                    To keep link document sizes as small as possible, this attribute name is just a single letter.
+                                    The type identifies the kind of this rate, e. g. amount factor.
+                                    Valid rate type identifiers are externally defined in an application area document (multi-model domain).
+                                    </documentation>
+                                </annotation></attribute>
+                            <attribute name="v" type="string" use="required">
+                                <annotation>
+                                    <documentation>Value of this rate.
+                                    To keep link document sizes as small as possible, this attribute name is just a single letter.
+                                    The value is the data - the qualitative or quantitative amount or specification - of this rate, e. g. a numeric factor, a boolean flag or a date.
+                                    Valid values of a certain type are externally defined in an application area document (multi-model domain).
+                                    </documentation>
+                                </annotation></attribute>
+                            <attribute name="m" type="string" use="required">
+                                <annotation>
+                                    <documentation>Target application model of this rate.
+                                    To keep link document sizes as small as possible, this attribute name is just a single letter.
+                                    The reference to an ID of an application model which this rate refers to.
+                                    Valid values of a certain type are externally defined in an application area document (multi-model domain).
+                                    </documentation>
+                                </annotation></attribute>
+                        </complexType>
+                   </element>
+                </sequence>
+                <attribute use="required" name="id" type="string">
+                    <annotation>
+                        <documentation>
+                            Mandatory ID of the application model's data element.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute use="required" name="m" type="string">
+                    <annotation>
+                        <documentation>
+                            Mandatory reference to the application model ID of this relatum in the parent multi-model container document.
+                            To keep link document sizes as small as possible, this attribute name is just a single letter.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute use="optional" name="f" type="string">
+                    <annotation>
+                        <documentation>
+                            Reference to the data format ID of this relatum in the parent multi-model container document.
+                            If there are more than one data formats of the application model, then this information is mandatory, otherwise it is optional.
+                            To keep link document sizes as small as possible, this attribute name is just a single letter.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute use="optional" name="r" type="string">
+                    <annotation>
+                        <documentation>
+                            Reference to the data resource ID of this relatum in the parent multi-model container document.
+                            If there are more than one data resources of the application model and the element IDs are not guaranteed to be unique over all these data resources
+                            (thus the IDs are only unique within each resource), then this information is mandatory, otherwise it is optional.
+                            To keep link document sizes as small as possible, this attribute name is just a single letter.
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
