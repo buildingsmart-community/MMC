@@ -27,7 +27,7 @@ The MMC Version 2.0 is generic and can be applied in literally any domain. In th
 The MMC Version 1.0 was developed in the German research project Mefisto to mainly support construction project management and construction simulation (cf. www.mefisto-bau.de).
 
 ## Software and Examples
-The creation and exchange of MMC Version 1.0 is supported by software applications from RIB Software AG, gibGreiner GmbH, f:data GmbH und Tragwerk Software GmbH. 
+The creation and exchange of MMC Version 1.0 is supported by software applications from RIB Software AG, gibGreiner GmbH, Dr. Schiller & Partner GmbH und Tragwerk Software GmbH. 
 
 Examples can be found at http://www.mefisto-bau.de/resources.html.
 
